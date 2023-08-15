@@ -11,6 +11,7 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 
@@ -37,9 +38,10 @@ function App() {
     bgcolor: 'background.paper',
     border: '1px solid ',
     boxShadow: 24,
-    pt: 3,
-    px: 4,
-    pb: 3,
+    pt: 4,
+    pl: 15,
+    pr: 0,
+    pb: 4,
   };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -71,12 +73,18 @@ function App() {
     handleClose();
   }
   //yeni bir dizi oluştur: id si boş olmayanlardan
+  //filter kullanırsak dizi döndürür
   function deleteItem(id){
     const newArray =items.filter(item=> item.id !== id);
     setItems(newArray);
   };
-  function editItem(){
-    const handleOpen = () => setOpen(true);
+  //nesne döndürdüğü için find kullandık
+  function editItem(id){
+    setOpen(true);
+    const editTask = items.find(item=> item.id === id);
+    console.log("id değeri: ",id);
+    console.log("burası edit item: ",editTask);
+    setNewItem(editTask.value);
   };
 
   
@@ -120,14 +128,14 @@ function App() {
       autoComplete="off"
     >
       <TextField
-      id="standard-basic"
+      id="modalText"
       label="Writting..."
       variant="standard"
       value={newItem}
       //aldığımız input değerini onChange ile set edicez yani yeni dizi olusturucaz.
       onChange={e=>setNewItem(e.target.value)}/>
     </Box>
-    <FormControl variant="standard" >
+    <FormControl id="modalStatus"variant="standard" >
         <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
         <Select
           labelId="demo-simple-select-standard-label"
@@ -136,11 +144,12 @@ function App() {
           onChange={modalChange}
           label="Age"
         >
-          <MenuItem id='modalMenu' value={10}>Completed</MenuItem>
-          <MenuItem id='modalMenu' value={20}>Incompleted</MenuItem>
-          <MenuItem id='modalMenu' value={30}>All</MenuItem>
+          <MenuItem id='modalMenu' >Completed</MenuItem>
+          <MenuItem id='modalMenu' >Incompleted</MenuItem>
+          <MenuItem id='modalMenu' >All</MenuItem>
         </Select>
       </FormControl>
+      <div className='modalButtons'> 
     <Button
       variant="contained"
       id="addTask"
@@ -149,7 +158,9 @@ function App() {
     <Button 
     variant="contained"
     onClick={()=>cancelTask()}  
-    id="cancelTask">Cancel</Button>
+    id="cancelTask"
+    >Cancel</Button>
+    </div>
         </Box>
       </Modal>
 
@@ -157,8 +168,9 @@ function App() {
         {items.map(item=>{// map ile key kullanmak gerekli. 
           return(
             //her bir iteme gelen id ve value
-            <li key={item.id}><Checkbox  {...label} />{item.value}
+            <li key={item.id}><Checkbox id='checkTask' {...label} />{item.value}
             <Button id={"lineDelete"} onClick={()=>deleteItem(item.id)} variant="text" ><DeleteIcon></DeleteIcon></Button>
+            <Button id={"editButton"} onClick={()=>editItem(item.id)} variant="text" ><EditIcon></EditIcon></Button>
             <div id='currentDate'>
             {currentDate}
             </div>
