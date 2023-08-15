@@ -83,7 +83,7 @@ function App() {
 
   return (
     <div className="App">
-      <Button onClick={handleOpen} variant="contained" className='addButton' >Create a task</Button>
+      <Button onClick={handleOpen} variant="contained" className='addButton' >Create a new task</Button>
       <Box className="boxInput" >
         <FormControl>
         <InputLabel id="demo-simple-select-label">View</InputLabel>
