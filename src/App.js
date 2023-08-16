@@ -25,6 +25,10 @@ function App() {
   const modalChange = (event) => {
     setModalStatus(event.target.value);
     };
+  // const[modalEdit, setModalEdit]= React.useState('');
+  // const modalEditChange = (event)=>{
+  //   setModalEdit(event.target.value);
+  // }
 
 
 
@@ -50,6 +54,7 @@ function App() {
   const [newItem, setNewItem]=useState("");
   const [items, setItems]=useState([]);
 
+  
   function addItem() {
 
     if (!newItem) {
@@ -82,15 +87,13 @@ function App() {
   function editItem(id){
     setOpen(true);
     const editTask = items.find(item=> item.id === id);
-    console.log("id değeri: ",id);
-    console.log("burası edit item: ",editTask);
     setNewItem(editTask.value);
   };
 
   
 
   return (
-    <div className="App">
+  <div className="App">
       <Button onClick={handleOpen} variant="contained" className='addButton' >Create a new task</Button>
       <Box className="boxInput" >
         <FormControl>
@@ -102,14 +105,14 @@ function App() {
            label="Status"
            onChange={handleChange}
          >
-         <MenuItem value={10}>Completed</MenuItem>
-         <MenuItem value={10}>Incompleted</MenuItem>
-         <MenuItem value={20}>All</MenuItem>
+          <MenuItem value={1}>Completed</MenuItem>
+          <MenuItem value={2}>Incompleted</MenuItem>
+          <MenuItem value={3}>All</MenuItem>
         </Select>
       </FormControl>
     </Box>
     
-      <Modal id='modal'
+      <Modal id='modalAdd'
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -142,11 +145,11 @@ function App() {
           id="demo-simple-select-standard"
           value={modalStatus}
           onChange={modalChange}
-          label="Age"
         >
-          <MenuItem id='modalMenu' >Completed</MenuItem>
-          <MenuItem id='modalMenu' >Incompleted</MenuItem>
-          <MenuItem id='modalMenu' >All</MenuItem>
+         <MenuItem value={1}>Completed</MenuItem>
+         <MenuItem value={2}>Incompleted</MenuItem>
+         <MenuItem value={3}>All</MenuItem>
+
         </Select>
       </FormControl>
       <div className='modalButtons'> 
@@ -168,18 +171,70 @@ function App() {
         {items.map(item=>{// map ile key kullanmak gerekli. 
           return(
             //her bir iteme gelen id ve value
-            <li key={item.id}><Checkbox id='checkTask' {...label} />{item.value}
+            <li key={item.id}><Checkbox {...label} />{item.value}
             <Button id={"lineDelete"} onClick={()=>deleteItem(item.id)} variant="text" ><DeleteIcon></DeleteIcon></Button>
             <Button id={"editButton"} onClick={()=>editItem(item.id)} variant="text" ><EditIcon></EditIcon></Button>
             <div id='currentDate'>
             {currentDate}
             </div>
             </li>
-          
           )
         })}
       </ul>
+      {/* <Modal id='modalEdit'
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Edit the task
+          </Typography>
+          <Box
+      component="form"
+      sx={{
+        '& > :not(style)': { m: 1, width: '25ch' },
+      }}
+      noValidate
+      autoComplete="off"
+    >
+      <TextField
+      id="modalText"
+      label="Editing..."
+      variant="standard"
+      value={newItem}
+      //aldığımız input değerini onChange ile set edicez yani yeni dizi olusturucaz.
+      onChange={e=>setNewItem(e.target.value)}/>
+    </Box>
+    <FormControl id="modalStatus"variant="standard" >
+        <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={modalEdit}
+          onChange={modalEditChange}
+        >
+          <MenuItem id='modalMenu' >Completed</MenuItem>
+          <MenuItem id='modalMenu' >Incompleted</MenuItem>
+          <MenuItem id='modalMenu' >All</MenuItem>
+        </Select>
+      </FormControl>
+      <div className='modalButtons'> 
+    <Button
+      variant="contained"
+      id="addTask"
+      onClick={()=> editItem()}
+      >UPDATE</Button>
+    <Button 
+    variant="contained"
+    onClick={()=>cancelTask()}  
+    id="cancelTask"
+    >Cancel</Button>
     </div>
+        </Box>
+      </Modal> */}
+  </div>
   );
 }
 
