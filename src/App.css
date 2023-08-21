@@ -1,11 +1,23 @@
 .App {
   text-align: center;
-  /* background:#e5f2ff; */
-  margin-top:5% ;
-  margin-right:22%;
-  margin-left:22%;
-  height:600px;
-  border-radius:25px;
+  background-image: url('../src/img/boshjk.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  min-height:1024px;
+  
+}
+
+.appLittle{
+  padding-top:8%;
+  padding-right:20%;
+  padding-left:20%;
+}
+.title{
+  font-family: Courier, monospace;
+  font-weight:800;
+  font-size:  250%;
+  color: #424949;
 }
 /* 
 .App-logo {
@@ -43,20 +55,20 @@
   }
 } */
 .App .addButton{
-  margin-top:7%;
-  margin-left:-75%;
-  height: 10%;
-  border-radius:50%;
+  margin-top:10%;
+  margin-left:-80%;
+  border-radius:9%;
+  padding:15px;
 }
 .boxInput{
   padding-left:60%;
-  margin-top:-11%;
-  background: #cce5ff;
+  margin-top:-9.5%;
+  background: #CCD1D1;
   padding-top:4.2%;
   padding-bottom:3%;
   border-radius:7px;
   border: 1px solid;
-  box-shadow: 2px 2px #888888;
+  box-shadow: 2px 2px #424949;
 }
 .MuiFormControl-root{
   width:55%;
@@ -82,15 +94,15 @@ margin-left:17%;
 margin-top:7%;
 }
 ul li {
-  background: #cce5ff;
-  color: darkblue;
+  background: #E5E8E8;
+  color: #424949;
   margin-left: 4%;
   margin-bottom: 10px;
   width:80%;
   list-style-type: none;
   border-radius:7px;
   border: 1px solid;
-  box-shadow: 4px 3px #888888;
+  box-shadow: 4px 3px #424949;
   padding-top:2%;
   padding-bottom:6%;
   padding-left:3%;

@@ -14,7 +14,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Icon from '@mui/material/Icon';
 import AddIcon from '@mui/icons-material/Add';
-import background from "./img/boshjk.png";
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import { useAlert } from 'react-alert';
+import image from '../src/img/boshjk.png'
 
 
 
@@ -52,41 +55,18 @@ function App() {
   };
   const [openAdd, setOpenAdd] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
-  const [selectedId, setSelectedId] = React.useState(0);
-  const [editStatus, setEditStatus] = React.useState(''); //yeni
+  const [editStatus, setEditStatus] = React.useState('');
   const [newItem, setNewItem]= React.useState("");
   const [items, setItems]= React.useState([]);
   const [editItem, setEditItem] = React.useState(null);
   const [editedValue, setEditedValue] = React.useState('');
+  const [checked, setChecked]=useState(false);
 
   const addModalOpen = () => setOpenAdd(true);
   const addModalClose = () => setOpenAdd(false);
-  const editModalOpen = () => setOpenEdit(true);
+  // const editModalOpen = () => setOpenEdit(true); bunun yerine array function kullandım
   const editModalClose = () => setOpenEdit(false);
 
-
-  //metinde değişiklik yapıldığında bu method çağırılır, setEditedValue ile güncelleme işlemini yapar.
-  // const handleInputChange = (event) => {
-  //   setEditedValue(event.target.value);
-  // };
-
-  // save butonuna tıklandığında bu method çalışır günceller ve modalı kapatır.
-  const handleAddItem = () => {
-
-    if (editedValue.trim() !== '') {
-      if (editItem !== null) {
-        // Düzenlenen öğeyi güncelle
-        const updatedItems = [...items];
-        updatedItems[editItem] = editedValue;
-        setItems(updatedItems);
-        setEditItem(null);
-      } else {
-        // Yeni öğe ekle
-        setItems([...items, editedValue]);
-      }
-      setEditedValue('');
-    }
-  };
 // id değerine sahip ögeyi items dizisinde bulur ve düzenleme moduna geçer.
   const handleEditItem = () => {
     editItem.id = editItem.id;
@@ -97,21 +77,17 @@ function App() {
     setEditStatus(editItem.status);
     setEditedValue(editItem.value)
     setOpenEdit(false);
-
-    // setSelectedId(editItem.id)
-    // setModalEdit(editItem.status)
-
+  };
+  const CheckboxChange = () => {
+    setChecked(!checked);
+  };
+  const textFieldChange = (e) => {
+    setNewItem(e.target.value);
+  };
+  const textFieldStyle = {
+    textDecoration : checked ? 'line-through' : 'none',
   };
 
-  // const handleDeleteItem = (index) => {
-  //   const updatedItems = items.filter((_, i) => i !== index);
-  //   setItems(updatedItems);
-  // };
-
-  //const [editItem, setEditItem]=useState("");
-
-
-  
   function addItem() {
 
     if (!newItem) {
@@ -160,25 +136,11 @@ function App() {
   
 
   return (
-  <div className="App">
-      <Button onClick={addModalOpen} variant="contained" className='addButton' ><AddIcon></AddIcon></Button>
-      {/* <Box className="boxInput" >
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Age</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={status}
-          onChange={handleChange}
-          label="Status"
-        >
 
-          <MenuItem value={1}>Completed</MenuItem>
-          <MenuItem value={2}>Incompleted</MenuItem>
-          <MenuItem value={3}>All</MenuItem>
-        </Select>
-        </FormControl>
-        </Box> */}
+  <div className="App">
+<div className='appLittle'>
+    <div className='title'>TODO LIST</div>
+      <Button onClick={addModalOpen} variant="contained" className='addButton' ><AddIcon></AddIcon></Button>
       <Box className="boxInput" >
         <FormControl>
         <InputLabel id="demo-simple-select-label">View</InputLabel>
@@ -255,7 +217,14 @@ function App() {
         {items.map(item=>{// map ile key kullanmak gerekli. 
           return(
             //her bir iteme gelen id ve value
-            <li key={item.id}><Checkbox {...label} />
+            <li key={item.id}
+            style={textFieldStyle}
+            onChange={textFieldChange}
+            className="listItem">
+                <Checkbox
+                checked={checked}
+                onChange={CheckboxChange}
+                  {...label} />
                   {item.value} 
             <Button id={"lineDelete"} onClick={()=>deleteItem(item.id)} variant="text" ><DeleteIcon></DeleteIcon></Button>
             <Button id={"editButton"} onClick={()=>openEditModal(item)} variant="text" ><EditIcon></EditIcon></Button>
@@ -271,20 +240,16 @@ function App() {
         open={openEdit}
         //onClose={handleClose}
         aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+        aria-describedby="modal-modal-description">
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Edit the task
           </Typography>
           <Box
       component="form"
-      sx={{
-        '& > :not(style)': { m: 1, width: '25ch' },
-      }}
+      sx={{'& > :not(style)': { m: 1, width: '25ch' },}}
       noValidate
-      autoComplete="off"
-    >
+      autoComplete="off">
       <TextField
       id="modalText"
       label="Editing..."
@@ -311,7 +276,8 @@ function App() {
       variant="contained"
       id="addTask"
       onClick={()=> handleEditItem()}
-      >UPDATE</Button>
+      >UPDATE
+      </Button>
     <Button 
     variant="contained"
     onClick={()=>editModalClose()}  
@@ -321,7 +287,7 @@ function App() {
         </Box>
       </Modal>
   </div>
+  </div>
   );
 }
-
 export default App;
