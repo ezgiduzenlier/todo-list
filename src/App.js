@@ -1,5 +1,5 @@
 import './App.css';
-import React ,{useState}  from 'react';
+import React, {useState}  from 'react';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -12,12 +12,15 @@ import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Icon from '@mui/material/Icon';
+import AddIcon from '@mui/icons-material/Add';
+import background from "./img/boshjk.png";
 
 
 
 function App() {
 
-  const [status, setStatus] = React.useState('');
+  const [status, setStatus] = useState('');
   const handleChange = (event) => {
     setStatus(event.target.value);
   };
@@ -25,12 +28,12 @@ function App() {
   const modalChange = (event) => {
     setModalStatus(event.target.value);
     };
-  // const[modalEdit, setModalEdit]= React.useState('');
-  // const modalEditChange = (event)=>{
-  //   setModalEdit(event.target.value);
-  // }
-
-
+  const[modalEdit, setModalEdit]= React.useState('');
+  const modalEditChange = (event)=>{
+    
+    setEditStatus(event.target.value);
+    
+  }
 
   //modal style
   const style = {
@@ -47,12 +50,66 @@ function App() {
     pr: 0,
     pb: 4,
   };
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [openAdd, setOpenAdd] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
+  const [selectedId, setSelectedId] = React.useState(0);
+  const [editStatus, setEditStatus] = React.useState(''); //yeni
+  const [newItem, setNewItem]= React.useState("");
+  const [items, setItems]= React.useState([]);
+  const [editItem, setEditItem] = React.useState(null);
+  const [editedValue, setEditedValue] = React.useState('');
 
-  const [newItem, setNewItem]=useState("");
-  const [items, setItems]=useState([]);
+  const addModalOpen = () => setOpenAdd(true);
+  const addModalClose = () => setOpenAdd(false);
+  const editModalOpen = () => setOpenEdit(true);
+  const editModalClose = () => setOpenEdit(false);
+
+
+  //metinde değişiklik yapıldığında bu method çağırılır, setEditedValue ile güncelleme işlemini yapar.
+  // const handleInputChange = (event) => {
+  //   setEditedValue(event.target.value);
+  // };
+
+  // save butonuna tıklandığında bu method çalışır günceller ve modalı kapatır.
+  const handleAddItem = () => {
+
+    if (editedValue.trim() !== '') {
+      if (editItem !== null) {
+        // Düzenlenen öğeyi güncelle
+        const updatedItems = [...items];
+        updatedItems[editItem] = editedValue;
+        setItems(updatedItems);
+        setEditItem(null);
+      } else {
+        // Yeni öğe ekle
+        setItems([...items, editedValue]);
+      }
+      setEditedValue('');
+    }
+  };
+// id değerine sahip ögeyi items dizisinde bulur ve düzenleme moduna geçer.
+  const handleEditItem = () => {
+    editItem.id = editItem.id;
+    editItem.value = editedValue;
+    editItem.status = editStatus;
+
+    setEditItem(editItem)
+    setEditStatus(editItem.status);
+    setEditedValue(editItem.value)
+    setOpenEdit(false);
+
+    // setSelectedId(editItem.id)
+    // setModalEdit(editItem.status)
+
+  };
+
+  // const handleDeleteItem = (index) => {
+  //   const updatedItems = items.filter((_, i) => i !== index);
+  //   setItems(updatedItems);
+  // };
+
+  //const [editItem, setEditItem]=useState("");
+
 
   
   function addItem() {
@@ -63,38 +120,65 @@ function App() {
     }
     const item = {
       //id için random bir sayı oluşturup 10 ile çarpıcak
-      id: Math.floor(Math.random()*10),
+      id: Math.floor(Math.random()*10000),
       //newItem inputtan aldığımız değer
-      value: newItem
+      value: newItem,
+      status : modalStatus
     }
     setItems(oldItems => [...oldItems, item]);
     setNewItem("");
+    setOpenAdd(false);
   }
   const currentDate=new Date().toLocaleString('tr-TR');
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
-  //modal cancel butonu
-  function cancelTask(){
-    handleClose();
-  }
+
+  const handleDeleteItem = (item) => {
+    const deletedItems = items.filter((_, i) => i !== item);
+    setItems(deletedItems);
+  };
   //yeni bir dizi oluştur: id si boş olmayanlardan
   //filter kullanırsak dizi döndürür
   function deleteItem(id){
     const newArray =items.filter(item=> item.id !== id);
     setItems(newArray);
   };
+
+
   //nesne döndürdüğü için find kullandık
-  function editItem(id){
-    setOpen(true);
-    const editTask = items.find(item=> item.id === id);
-    setNewItem(editTask.value);
-  };
+   function openEditModal(item){
+    setOpenEdit(true);
+    // const editTask = items.find(item=> item.id === id);
+    // setNewItem(editTask);
+    // setSelectedId(id);
+    setEditItem(item)
+    setEditedValue(item.value)
+    setEditStatus(item.status)
+    console.log(item)
+   };
 
   
 
   return (
   <div className="App">
-      <Button onClick={handleOpen} variant="contained" className='addButton' >Create a new task</Button>
+      <Button onClick={addModalOpen} variant="contained" className='addButton' ><AddIcon></AddIcon></Button>
+      {/* <Box className="boxInput" >
+      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-standard-label">Age</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={status}
+          onChange={handleChange}
+          label="Status"
+        >
+
+          <MenuItem value={1}>Completed</MenuItem>
+          <MenuItem value={2}>Incompleted</MenuItem>
+          <MenuItem value={3}>All</MenuItem>
+        </Select>
+        </FormControl>
+        </Box> */}
       <Box className="boxInput" >
         <FormControl>
         <InputLabel id="demo-simple-select-label">View</InputLabel>
@@ -112,9 +196,8 @@ function App() {
       </FormControl>
     </Box>
     
-      <Modal id='modalAdd'
-        open={open}
-        onClose={handleClose}
+      <Modal id='modalFirst'
+        open={openAdd}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -134,6 +217,7 @@ function App() {
       id="modalText"
       label="Writting..."
       variant="standard"
+
       value={newItem}
       //aldığımız input değerini onChange ile set edicez yani yeni dizi olusturucaz.
       onChange={e=>setNewItem(e.target.value)}/>
@@ -160,7 +244,7 @@ function App() {
       >Add task</Button>
     <Button 
     variant="contained"
-    onClick={()=>cancelTask()}  
+    onClick={()=>addModalClose()}  
     id="cancelTask"
     >Cancel</Button>
     </div>
@@ -171,19 +255,21 @@ function App() {
         {items.map(item=>{// map ile key kullanmak gerekli. 
           return(
             //her bir iteme gelen id ve value
-            <li key={item.id}><Checkbox {...label} />{item.value}
+            <li key={item.id}><Checkbox {...label} />
+                  {item.value} 
             <Button id={"lineDelete"} onClick={()=>deleteItem(item.id)} variant="text" ><DeleteIcon></DeleteIcon></Button>
-            <Button id={"editButton"} onClick={()=>editItem(item.id)} variant="text" ><EditIcon></EditIcon></Button>
+            <Button id={"editButton"} onClick={()=>openEditModal(item)} variant="text" ><EditIcon></EditIcon></Button>
             <div id='currentDate'>
-            {currentDate}
+              
+            {currentDate} {"("} {item.status} {")"}
             </div>
             </li>
           )
         })}
       </ul>
-      {/* <Modal id='modalEdit'
-        open={open}
-        onClose={handleClose}
+      <Modal id='modalSecond'
+        open={openEdit}
+        //onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -203,37 +289,37 @@ function App() {
       id="modalText"
       label="Editing..."
       variant="standard"
-      value={newItem}
+      value={editedValue}
       //aldığımız input değerini onChange ile set edicez yani yeni dizi olusturucaz.
-      onChange={e=>setNewItem(e.target.value)}/>
+      onChange={e=>setEditedValue(e.target.value)}/>
     </Box>
-    <FormControl id="modalStatus"variant="standard" >
+    <FormControl id="modalStatus2" variant="standard" >
         <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
         <Select
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
-          value={modalEdit}
+          value={editStatus} 
           onChange={modalEditChange}
         >
-          <MenuItem id='modalMenu' >Completed</MenuItem>
-          <MenuItem id='modalMenu' >Incompleted</MenuItem>
-          <MenuItem id='modalMenu' >All</MenuItem>
+          <MenuItem key={1} value={1}>Completed</MenuItem>
+          <MenuItem key={2} value={2}>Incompleted</MenuItem>
+          <MenuItem key={3} value={3}>All</MenuItem>
         </Select>
       </FormControl>
       <div className='modalButtons'> 
     <Button
       variant="contained"
       id="addTask"
-      onClick={()=> editItem()}
+      onClick={()=> handleEditItem()}
       >UPDATE</Button>
     <Button 
     variant="contained"
-    onClick={()=>cancelTask()}  
+    onClick={()=>editModalClose()}  
     id="cancelTask"
     >Cancel</Button>
     </div>
         </Box>
-      </Modal> */}
+      </Modal>
   </div>
   );
 }

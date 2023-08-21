@@ -44,15 +44,15 @@
 } */
 .App .addButton{
   margin-top:7%;
-  margin-left:-60%;
-  height: 9%;
-
+  margin-left:-75%;
+  height: 10%;
+  border-radius:50%;
 }
 .boxInput{
-  padding-left:61%;
+  padding-left:60%;
   margin-top:-11%;
   background: #cce5ff;
-  padding-top:4.7%;
+  padding-top:4.2%;
   padding-bottom:3%;
   border-radius:7px;
   border: 1px solid;
@@ -68,12 +68,8 @@
 .text{
   width:70%;
 }
-#modalAdd{
+#modalFirst{
   padding-right:-5%;
-}
-
-#modalMenu{
-  float:left;
 }
 
 #addTask{
@@ -112,7 +108,7 @@ li listItem{
 }
 #editButton{
   float:right;
-  margin-right:-5%;
+  margin-right:-2%;
   margin-top:0%;
 }
 #currentDate{
