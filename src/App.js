@@ -31,11 +31,9 @@ function App() {
   const modalChange = (event) => {
     setModalStatus(event.target.value);
     };
-  const[modalEdit, setModalEdit]= React.useState('');
+  // const[modalEdit, setModalEdit]= React.useState('');
   const modalEditChange = (event)=>{
-    
     setEditStatus(event.target.value);
-    
   }
 
   //modal style
@@ -72,14 +70,19 @@ function App() {
     editItem.id = editItem.id;
     editItem.value = editedValue;
     editItem.status = editStatus;
-
     setEditItem(editItem)
     setEditStatus(editItem.status);
     setEditedValue(editItem.value)
     setOpenEdit(false);
   };
-  const CheckboxChange = () => {
-    setChecked(!checked);
+  //prevTextFrields, TextFields'in önceki durumunu temsil eden bir isimlendirme. items ile aynı isi yapmaz mı? değiştireyim mi?
+  //Güncellemeler önceki duruma dayalı olarak yeni bir durum oluşturarak yapılmalı.
+  //Bu şekilde önceki state değişmez bu da React'ın immutable state kavramına uygun bir yaklasımdır.
+  const CheckboxChange = (id) => {
+    setItems((items) =>
+    items.map((item) =>
+      item.id === id ? { ...item, checked: !item.checked } : item // yanlış olabilir
+    ));
   };
   const textFieldChange = (e) => {
     setNewItem(e.target.value);
@@ -87,9 +90,7 @@ function App() {
   const textFieldStyle = {
     textDecoration : checked ? 'line-through' : 'none',
   };
-
   function addItem() {
-
     if (!newItem) {
       alert("Please enter an item");
       return;
@@ -106,38 +107,28 @@ function App() {
     setOpenAdd(false);
   }
   const currentDate=new Date().toLocaleString('tr-TR');
+  //label, inputProps özelliğine sahip bir nesnedir. Bu özellik chechbox'ın etiket özelliklerini tanımlamak için kullanılır.
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
-
-  const handleDeleteItem = (item) => {
-    const deletedItems = items.filter((_, i) => i !== item);
-    setItems(deletedItems);
-  };
   //yeni bir dizi oluştur: id si boş olmayanlardan
-  //filter kullanırsak dizi döndürür
+  //dizi döndürdüğü için filter kullandık, nesne döndürseydik find kullanıcaktık.
   function deleteItem(id){
     const newArray =items.filter(item=> item.id !== id);
     setItems(newArray);
   };
-
-
-  //nesne döndürdüğü için find kullandık
    function openEditModal(item){
     setOpenEdit(true);
-    // const editTask = items.find(item=> item.id === id);
-    // setNewItem(editTask);
-    // setSelectedId(id);
     setEditItem(item)
     setEditedValue(item.value)
     setEditStatus(item.status)
     console.log(item)
    };
+   console.log(status);
+  const filteredItems = status ? items.filter(item => item.status===status) : items;
 
-  
 
   return (
-
-  <div className="App">
+<div className="App">
 <div className='appLittle'>
     <div className='title'>TODO LIST</div>
       <Button onClick={addModalOpen} variant="contained" className='addButton' ><AddIcon></AddIcon></Button>
@@ -151,13 +142,12 @@ function App() {
            label="Status"
            onChange={handleChange}
          >
+          <MenuItem>All</MenuItem>
           <MenuItem value={1}>Completed</MenuItem>
           <MenuItem value={2}>Incompleted</MenuItem>
-          <MenuItem value={3}>All</MenuItem>
         </Select>
       </FormControl>
     </Box>
-    
       <Modal id='modalFirst'
         open={openAdd}
         aria-labelledby="modal-modal-title"
@@ -179,7 +169,6 @@ function App() {
       id="modalText"
       label="Writting..."
       variant="standard"
-
       value={newItem}
       //aldığımız input değerini onChange ile set edicez yani yeni dizi olusturucaz.
       onChange={e=>setNewItem(e.target.value)}/>
@@ -194,8 +183,6 @@ function App() {
         >
          <MenuItem value={1}>Completed</MenuItem>
          <MenuItem value={2}>Incompleted</MenuItem>
-         <MenuItem value={3}>All</MenuItem>
-
         </Select>
       </FormControl>
       <div className='modalButtons'> 
@@ -212,24 +199,22 @@ function App() {
     </div>
         </Box>
       </Modal>
-
       <ul>
-        {items.map(item=>{// map ile key kullanmak gerekli. 
+        {filteredItems.map(item=>{// map=her bir item için çalış.
           return(
-            //her bir iteme gelen id ve value
+            //her bir iteme gelenler
             <li key={item.id}
             style={textFieldStyle}
             onChange={textFieldChange}
             className="listItem">
+            {item.value} 
                 <Checkbox
-                checked={checked}
-                onChange={CheckboxChange}
+                  checked={item.checked}
+                  onChange={CheckboxChange}
                   {...label} />
-                  {item.value} 
             <Button id={"lineDelete"} onClick={()=>deleteItem(item.id)} variant="text" ><DeleteIcon></DeleteIcon></Button>
             <Button id={"editButton"} onClick={()=>openEditModal(item)} variant="text" ><EditIcon></EditIcon></Button>
             <div id='currentDate'>
-              
             {currentDate} {"("} {item.status} {")"}
             </div>
             </li>
@@ -268,7 +253,6 @@ function App() {
         >
           <MenuItem key={1} value={1}>Completed</MenuItem>
           <MenuItem key={2} value={2}>Incompleted</MenuItem>
-          <MenuItem key={3} value={3}>All</MenuItem>
         </Select>
       </FormControl>
       <div className='modalButtons'> 
