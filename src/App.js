@@ -52,8 +52,9 @@ function App() {
     pb: 4,
   };
   const [openAdd, setOpenAdd] = React.useState(false);
+  const [checkClick, setCheckClick] = useState(true);
   const [openEdit, setOpenEdit] = React.useState(false);
-  const [editStatus, setEditStatus] = React.useState('');
+  const [editStatus, setEditStatus] = React.useState(null);
   const [newItem, setNewItem]= React.useState("");
   const [items, setItems]= React.useState([]);
   const [editItem, setEditItem] = React.useState(null);
@@ -62,6 +63,7 @@ function App() {
 
   const addModalOpen = () => setOpenAdd(true);
   const addModalClose = () => setOpenAdd(false);
+  const checkClickChange = () => setCheckClick(false);
   // const editModalOpen = () => setOpenEdit(true); bunun yerine array function kullandım
   const editModalClose = () => setOpenEdit(false);
 
@@ -75,36 +77,55 @@ function App() {
     setEditedValue(editItem.value)
     setOpenEdit(false);
   };
-  //prevTextFrields, TextFields'in önceki durumunu temsil eden bir isimlendirme. items ile aynı isi yapmaz mı? değiştireyim mi?
+  //prevTextFields, TextFields'in önceki durumunu temsil eden bir isimlendirme. items ile aynı isi yapmaz mı? değiştireyim mi?
   //Güncellemeler önceki duruma dayalı olarak yeni bir durum oluşturarak yapılmalı.
   //Bu şekilde önceki state değişmez bu da React'ın immutable state kavramına uygun bir yaklasımdır.
+
+
+  // listede idye göre değişiklik yapar.
   const CheckboxChange = (id) => {
-    setItems((items) =>
-    items.map((item) =>
-      item.id === id ? { ...item, checked: !item.checked } : item // yanlış olabilir
-    ));
+    const updatedItems = items.map(item => {
+      if (item.id === id) {
+        return { ...item, 
+          checked: !item.checked, // mevcut checked değerini tersine çevirir
+          status: item.status ===1 ? item.status=2 : item.status=1 // yeni bir status değeri atayın
+
+        };
+      }
+      return item;
+    });
+  
+    setItems(updatedItems);
   };
+
+
+
   const textFieldChange = (e) => {
     setNewItem(e.target.value);
   };
   const textFieldStyle = {
     textDecoration : checked ? 'line-through' : 'none',
   };
+  
   function addItem() {
     if (!newItem) {
       alert("Please enter an item");
       return;
     }
+    
     const item = {
       //id için random bir sayı oluşturup 10 ile çarpıcak
       id: Math.floor(Math.random()*10000),
       //newItem inputtan aldığımız değer
       value: newItem,
-      status : modalStatus
+      status : modalStatus,
+      checked : checked
     }
     setItems(oldItems => [...oldItems, item]);
     setNewItem("");
     setOpenAdd(false);
+    setCheckClick(checked)
+
   }
   const currentDate=new Date().toLocaleString('tr-TR');
   //label, inputProps özelliğine sahip bir nesnedir. Bu özellik chechbox'ın etiket özelliklerini tanımlamak için kullanılır.
@@ -121,10 +142,8 @@ function App() {
     setEditItem(item)
     setEditedValue(item.value)
     setEditStatus(item.status)
-    console.log(item)
    };
-   console.log(status);
-  const filteredItems = status ? items.filter(item => item.status===status) : items;
+   const filteredItems = status ? items.filter(item => item.status===status) : items;
 
 
   return (
@@ -204,13 +223,21 @@ function App() {
           return(
             //her bir iteme gelenler
             <li key={item.id}
+            className="listItem"
             style={textFieldStyle}
             onChange={textFieldChange}
-            className="listItem">
-            {item.value} 
+            >
+             <span style={
+              { 
+                textDecoration: item.checked ? 'line-through' : 'none',
+                color:item.checked ? '#3658AB' : 'black',
+               }
+              }>
+        {item.value} 
+      </span>
                 <Checkbox
                   checked={item.checked}
-                  onChange={CheckboxChange}
+                  onChange={() => CheckboxChange(item.id)}
                   {...label} />
             <Button id={"lineDelete"} onClick={()=>deleteItem(item.id)} variant="text" ><DeleteIcon></DeleteIcon></Button>
             <Button id={"editButton"} onClick={()=>openEditModal(item)} variant="text" ><EditIcon></EditIcon></Button>
