@@ -22,14 +22,15 @@ function App() {
   const handleChange = (event) => {
     setStatus(event.target.value);
   };
-  const [modalStatus, setModalStatus] = React.useState('');
+  const [modalStatus, setModalStatus] = useState(2);
   const modalChange = (event) => {
+    console.log(event.target.value)
     setModalStatus(event.target.value);
     };
-  // const[modalEdit, setModalEdit]= React.useState('');
   const modalEditChange = (event)=>{
     setEditStatus(event.target.value);
-  }
+  };
+  //const [selectedItem, setSelectedItem] = useState(null);
 
   //modal style
   const style = {
@@ -52,7 +53,7 @@ function App() {
   const [editStatus, setEditStatus] = React.useState(null);
   const [newItem, setNewItem]= React.useState("");
   const [items, setItems]= React.useState([]);
-  const [editItem, setEditItem] = React.useState(null);
+  const [editItem, setEditItem] = React.useState();
   const [editedValue, setEditedValue] = React.useState('');
   const [checked, setChecked]=useState(false);
 
@@ -64,9 +65,14 @@ function App() {
 
 // id değerine sahip ögeyi items dizisinde bulur ve düzenleme moduna geçer.
   const handleEditItem = () => {
+
+
+
     editItem.id = editItem.id;
     editItem.value = editedValue;
     editItem.status = editStatus;
+    editItem.checked = !editItem.checked;
+
     setEditItem(editItem)
     setEditStatus(editItem.status);
     setEditedValue(editItem.value)
@@ -92,9 +98,6 @@ function App() {
   
     setItems(updatedItems);
   };
-
-
-
   const textFieldChange = (e) => {
     setNewItem(e.target.value);
   };
@@ -104,10 +107,10 @@ function App() {
   
   function addItem() {
     if (!newItem) {
-      alert("Please enter an item");
+      alert("Please enter an item!");
       return;
     }
-    
+
     const item = {
       //id için random bir sayı oluşturup 10 ile çarpıcak
       id: Math.floor(Math.random()*10000),
@@ -122,7 +125,6 @@ function App() {
     setCheckClick(checked)
 
   }
-  const currentDate=new Date().toLocaleString('tr-TR');
   //label, inputProps özelliğine sahip bir nesnedir. Bu özellik chechbox'ın etiket özelliklerini tanımlamak için kullanılır.
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -134,12 +136,12 @@ function App() {
   };
    function openEditModal(item){
     setOpenEdit(true);
-    setEditItem(item)
-    setEditedValue(item.value)
+    setEditItem(item);
+    setEditedValue(item.value);
     setEditStatus(item.status)
    };
    const filteredItems = status ? items.filter(item => item.status===status) : items;
-
+   const currentDate=new Date().toLocaleString('tr-TR');
 
   return (
 <div className="App">
@@ -192,10 +194,11 @@ function App() {
         <Select
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
+          // onOpen={() => setModalStatus(2)}//her açılışta default olarak incompleted gelsin-çalışmadı
           value={modalStatus}
           onChange={modalChange}
         >
-         <MenuItem value={1}>Completed</MenuItem>
+         <MenuItem value={1}disabled>Completed</MenuItem>
          <MenuItem value={2}>Incompleted</MenuItem>
         </Select>
       </FormControl>
@@ -224,6 +227,7 @@ function App() {
             >
              <span style={
               { 
+                paddingRight: '75%',
                 textDecoration: item.checked ? 'line-through' : 'none',
                 color:item.checked ? '#3658AB' : 'black',
                }
