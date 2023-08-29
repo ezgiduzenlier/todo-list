@@ -25,7 +25,6 @@ import FormControl from '@mui/material/FormControl';
     pb: 4,
   };
 
-
 function ModalFirst({openAdd, newItem, setNewItem, modalStatus, modalChange, addItem, addModalClose,}) {
 
 
