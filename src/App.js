@@ -1,20 +1,33 @@
 import './App.css';
-import React, {useState}  from 'react';
+import React, {useEffect, useState}  from 'react';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
+import ModalFirst from './components/ModalFirst'
+import ModalSecond from './components/ModalSecond';
 
-
+  //modal style
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '1px solid ',
+    boxShadow: 24,
+    pt: 4,
+    pl: 15,
+    pr: 0,
+    pb: 4,
+  };
 
 function App() {
 
@@ -32,21 +45,7 @@ function App() {
   };
   //const [selectedItem, setSelectedItem] = useState(null);
 
-  //modal style
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '1px solid ',
-    boxShadow: 24,
-    pt: 4,
-    pl: 15,
-    pr: 0,
-    pb: 4,
-  };
+
   const [openAdd, setOpenAdd] = React.useState(false);
   const [checkClick, setCheckClick] = useState(true);
   const [openEdit, setOpenEdit] = React.useState(false);
@@ -56,7 +55,6 @@ function App() {
   const [editItem, setEditItem] = React.useState();
   const [editedValue, setEditedValue] = React.useState('');
   const [checked, setChecked]=useState(false);
-
   const addModalOpen = () => setOpenAdd(true);
   const addModalClose = () => setOpenAdd(false);
   const checkClickChange = () => setCheckClick(false);
@@ -64,18 +62,20 @@ function App() {
   const editModalClose = () => setOpenEdit(false);
 
 // id değerine sahip ögeyi items dizisinde bulur ve düzenleme moduna geçer.
-  const handleEditItem = () => {
 
-
-
-    editItem.id = editItem.id;
-    editItem.value = editedValue;
-    editItem.status = editStatus;
-    editItem.checked = !editItem.checked;
-
-    setEditItem(editItem)
-    setEditStatus(editItem.status);
-    setEditedValue(editItem.value)
+  const handleEditItem = () => {// item listesini güncellersen düzelebilir.
+console.log('çalıstı');
+  const temp={
+    id:editItem.id,
+    value:editedValue,
+    status:editStatus,
+    checked:!editItem.checked
+  }
+  console.log(temp);
+    
+    setEditItem(temp)
+    setEditStatus(temp.status);
+    setEditedValue(temp.value);
     setOpenEdit(false);
   };
   //prevTextFields, TextFields'in önceki durumunu temsil eden bir isimlendirme. items ile aynı isi yapmaz mı? değiştireyim mi?
@@ -143,6 +143,10 @@ function App() {
    const filteredItems = status ? items.filter(item => item.status===status) : items;
    const currentDate=new Date().toLocaleString('tr-TR');
 
+   useEffect(()=>{
+
+   },[filteredItems])
+
   return (
 <div className="App">
 <div className='appLittle'>
@@ -164,60 +168,19 @@ function App() {
         </Select>
       </FormControl>
     </Box>
-      <Modal id='modalFirst'
-        open={openAdd}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Create a new task
-          </Typography>
-          <Box
-      component="form"
-      sx={{
-        '& > :not(style)': { m: 1, width: '25ch' },
-      }}
-      noValidate
-      autoComplete="off"
-    >
-      <TextField
-      id="modalText"
-      label="Writting..."
-      variant="standard"
-      value={newItem}
-      //aldığımız input değerini onChange ile set edicez yani yeni dizi olusturucaz.
-      onChange={e=>setNewItem(e.target.value)}/>
-    </Box>
-    <FormControl id="modalStatus"variant="standard" >
-        <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          // onOpen={() => setModalStatus(2)}//her açılışta default olarak incompleted gelsin-çalışmadı
-          value={modalStatus}
-          onChange={modalChange}
-        >
-         <MenuItem value={1}disabled>Completed</MenuItem>
-         <MenuItem value={2}>Incompleted</MenuItem>
-        </Select>
-      </FormControl>
-      <div className='modalButtons'> 
-    <Button
-      variant="contained"
-      id="addTask"
-      onClick={()=> addItem()}
-      >Add task</Button>
-    <Button 
-    variant="contained"
-    onClick={()=>addModalClose()}  
-    id="cancelTask"
-    >Cancel</Button>
-    </div>
-        </Box>
-      </Modal>
+
+      <ModalFirst
+      openAdd={openAdd}
+      newItem={newItem}
+      setNewItem={setNewItem}// array func. ile aynı şey
+      modalStatus={modalStatus}
+      modalChange={modalChange}
+      addItem={addItem}
+      addModalClose={addModalClose}
+      />
       <ul>
         {filteredItems.map(item=>{// map=her bir item için çalış.
+
           return(
             //her bir iteme gelenler
             <li key={item.id}
@@ -247,55 +210,16 @@ function App() {
           )
         })}
       </ul>
-      <Modal id='modalSecond'
-        open={openEdit}
-        //onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description">
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Edit the task
-          </Typography>
-          <Box
-      component="form"
-      sx={{'& > :not(style)': { m: 1, width: '25ch' },}}
-      noValidate
-      autoComplete="off">
-      <TextField
-      id="modalText"
-      label="Editing..."
-      variant="standard"
-      value={editedValue}
-      //aldığımız input değerini onChange ile set edicez yani yeni dizi olusturucaz.
-      onChange={e=>setEditedValue(e.target.value)}/>
-    </Box>
-    <FormControl id="modalStatus2" variant="standard" >
-        <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={editStatus} 
-          onChange={modalEditChange}
-        >
-          <MenuItem key={1} value={1}>Completed</MenuItem>
-          <MenuItem key={2} value={2}>Incompleted</MenuItem>
-        </Select>
-      </FormControl>
-      <div className='modalButtons'> 
-    <Button
-      variant="contained"
-      id="addTask"
-      onClick={()=> handleEditItem()}
-      >UPDATE
-      </Button>
-    <Button 
-    variant="contained"
-    onClick={()=>editModalClose()}  
-    id="cancelTask"
-    >Cancel</Button>
-    </div>
-        </Box>
-      </Modal>
+
+        <ModalSecond
+        openEdit={openEdit}
+        editedValue={editedValue}
+        setEditedValue={setEditedValue}
+        editStatus={editStatus}
+        modalEditChange={modalEditChange}
+        handleEditItem={handleEditItem}
+        editModalClose={editModalClose}
+        />
   </div>
   </div>
   );
