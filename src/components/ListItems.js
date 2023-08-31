@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState}  from 'react';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -34,7 +34,7 @@ function ListItems({filteredItems, textFieldStyle, textFieldChange, CheckboxChan
               onChange={() => CheckboxChange(item.id)}
               {...label}
               />
-        <Button id={"lineDelete"} onClick={()=>deleteItem(item.id)} variant="text" ><DeleteIcon></DeleteIcon></Button>
+        <Button id={"deleteButton"} onClick={()=>deleteItem(item.id)} variant="text" ><DeleteIcon></DeleteIcon></Button>
         <Button id={"editButton"} onClick={()=>openEditModal(item)} variant="text" ><EditIcon></EditIcon></Button>
         <div id='currentDate'>
         {currentDate} {"("} {item.status} {")"}
