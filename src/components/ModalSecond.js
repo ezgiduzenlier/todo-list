@@ -25,7 +25,7 @@ import FormControl from '@mui/material/FormControl';
     pb: 4,
   };
 
-function ModalSecond({openEdit, editedValue, setEditedValue, editStatus, modalEditChange, handleEditItem, editModalClose}) {
+function ModalSecond({openEdit, edit, setEdit, modalEditChange, handleEditItem, editModalClose}) {
   return (
     <Modal id='modalSecond'
     open={openEdit}
@@ -45,16 +45,16 @@ function ModalSecond({openEdit, editedValue, setEditedValue, editStatus, modalEd
   id="modalText"
   label="Editing..."
   variant="standard"
-  value={editedValue}
+  value={edit.value}
   //aldığımız input değerini onChange ile set edicez yani yeni dizi olusturucaz.
-  onChange={e=>setEditedValue(e.target.value)}/>
+  onChange={e=>setEdit(e.target.value)}/>
 </Box>
 <FormControl id="modalStatus2" variant="standard" >
     <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
     <Select
       labelId="demo-simple-select-standard-label"
       id="demo-simple-select-standard"
-      value={editStatus} 
+      value={edit.status} 
       onChange={modalEditChange}
     >
       <MenuItem key={1} value={1}>Completed</MenuItem>

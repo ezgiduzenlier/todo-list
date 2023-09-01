@@ -10,46 +10,63 @@ import HeaderBox from './components/HeaderBox';
 
 function Home() {
 
-  const [status, setStatus] = useState('');
-  const handleChange = (event) => {
-    setStatus(event.target.value);
-  };
-  const [modalStatus, setModalStatus] = useState(2);
-  const modalChange = (event) => {
-    console.log(event.target.value)
-    setModalStatus(event.target.value);
-    };
-  const modalEditChange = (event)=>{
-    setEditStatus(event.target.value);
-  };
-  //const [selectedItem, setSelectedItem] = useState(null);
+
+  const [selectedItem, setSelectedItem] = useState(null);
   const [openAdd, setOpenAdd] = React.useState(false);
   const [checkClick, setCheckClick] = useState(true);
   const [openEdit, setOpenEdit] = React.useState(false);
-  const [editStatus, setEditStatus] = React.useState(null);
+  //const [editStatus, setEditStatus] = React.useState(null);
   const [newItem, setNewItem]= React.useState("");
   const [items, setItems]= React.useState([]);
-  const [editItem, setEditItem] = React.useState();
-  const [editedValue, setEditedValue] = React.useState('');
+  //const [editItem, setEditItem] = React.useState();
+  //const [editedValue, setEditedValue] = React.useState('');
   const [checked, setChecked]=useState(false);
+  const [status, setStatus] = useState('');
+  const [modalStatus, setModalStatus] = useState(2);
+  const [edit, setEdit]=useState({
+      item:'',
+      value:'',
+      status:null,
+      checked:false
+  });
+  //const [filteredItems, setFilteredItems] = useState([]);
+  const editModalClose = () => setOpenEdit(false);
   const addModalOpen = () => setOpenAdd(true);
   const addModalClose = () => setOpenAdd(false);
-  // const editModalOpen = () => setOpenEdit(true); bunun yerine array function kullandım
-  const editModalClose = () => setOpenEdit(false);
-// id değerine sahip ögeyi items dizisinde bulur ve düzenleme moduna geçer.
 
-  const handleEditItem = () => {// **********   burası yanlış, item listesini güncellersen düzelebilir *********
-console.log('çalıstı');
-  const temp={
-    id:editItem.id,
-    value:editedValue,
-    status:editStatus,
-    checked:!editItem.checked
+
+  const handleChange = (e) => {
+    setStatus(e.target.value);
+  };
+  const modalChange = (e) => {
+    console.log(e.target.value)
+    setModalStatus(e.target.value);
+    };
+  const modalEditChange = (e)=>{
+    setEdit({
+      ...edit,
+      value:e.target.value
+
+    });
+    };
+
+  const handleEditItem = (e) => {// **********   burası yanlış, item listesini güncellersen düzelebilir *********
+    
+    const temp={
+    id:edit.id, //editItem.id ne?
+    value:edit.value,
+    status:edit.status,
+    checked:!edit.checked 
   }
   console.log(temp);
-    setEditItem(temp)
-    setEditStatus(temp.status);
-    setEditedValue(temp.value);
+    setItems(temp);
+     setEdit({
+         ...edit,
+         value:e.target.value,
+         status:e.target.value,
+         checked:e.target.valu
+     })
+    setItems(temp);
     setOpenEdit(false);
   };
 
@@ -103,22 +120,42 @@ console.log('çalıstı');
     const newArray =items.filter(item=> item.id !== id);
     setItems(newArray);
   };
-   function openEditModal(item){
-    setOpenEdit(true);
-    setEditItem(item);
-    setEditedValue(item.value);
-    setEditStatus(item.status)
-   };
+  //  function openEditModal(item){
+  //   setOpenEdit(true);
+  //   setEditItem(item);
+  //   setEditedValue(item.value);
+  //   setEditStatus(item.status)
+  //  };
+    function openEditModal(item){
+     console.log('deneme');
+     setOpenEdit(true);
+     setEdit({
+       ...edit,
+       value:item.value,
+       status:item.status
+     })
+  };
 
-   function sortList(){
-    let copyItems=[...items]
-    copyItems.sort()
-    setItems(copyItems)
-   };
+  //  function sortList(){
+  //   let copyItems=[...items]
+  //   copyItems.sort()
+  //   setItems(copyItems)
+  //  };
 
-
+   const handleSort = () => {
+    const sortedItems = [...items].sort();
+    setItems(sortedItems);
+  };
 
    const filteredItems = status ? items.filter(item => item.status===status) : items;
+
+   const sortFilteredItems = () => {
+    const sortedItems = [...items].sort((a, b) => {
+      return a.value.localeCompare(b.value);
+    });
+    setItems(sortedItems);
+  };
+
    const currentDate=new Date().toLocaleString('tr-TR');
 
 
@@ -127,7 +164,8 @@ console.log('çalıstı');
 <div className='appLittle'>
     <div className='title'>TODO LIST</div>
       <Button onClick={addModalOpen} variant="contained" className='addButton' ><AddIcon></AddIcon></Button>
-      <Button className='sortButton' onClick={()=>sortList()} variant="contained">Sort from A to B</Button>
+      <Button className='sortButton' onClick={sortFilteredItems} variant="contained">Sort from A to B</Button>
+
 
 
       <HeaderBox
@@ -155,9 +193,9 @@ console.log('çalıstı');
       />
       <ModalSecond
       openEdit={openEdit}
-        editedValue={editedValue}
-        setEditedValue={setEditedValue}
-        editStatus={editStatus}
+        edit={edit.value}
+        setEdit={setEdit.value}
+        editSta={edit.status}
         modalEditChange={modalEditChange}
         handleEditItem={handleEditItem}
       editModalClose={editModalClose}
