@@ -37,7 +37,8 @@ function ListItems({filteredItems, textFieldStyle, textFieldChange, CheckboxChan
         <Button id={"deleteButton"} onClick={()=>deleteItem(item.id)} variant="text" ><DeleteIcon></DeleteIcon></Button>
         <Button id={"editButton"} onClick={()=>openEditModal(item)} variant="text" ><EditIcon></EditIcon></Button>
         <div id='currentDate'>
-        {currentDate} {"("} {item.status} {")"}
+        {/* {currentDate} {"("} {item.status} {")"} */}
+        {item.currentDate} ({item.status})
         </div>
         </li>
       )

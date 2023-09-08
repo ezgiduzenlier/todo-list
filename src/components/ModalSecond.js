@@ -8,6 +8,7 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import { internal_resolveProps } from '@mui/utils';
 
   //modal style
   const style = {
