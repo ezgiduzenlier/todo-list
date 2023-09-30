@@ -1,13 +1,11 @@
-import React, {useState}  from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
 
-
-function ListItems({filteredItems, textFieldStyle, textFieldChange, CheckboxChange, deleteItem, openEditModal, currentDate, label}) {
-
+function ListItems({filteredItems, textFieldStyle, textFieldChange, CheckboxChange, deleteItem, openEditModal, label}) {
 
   return (
     <ul>
@@ -22,23 +20,25 @@ function ListItems({filteredItems, textFieldStyle, textFieldChange, CheckboxChan
         >
          <span style={
           { 
-            paddingRight: '75%',
+            paddingRight: '86%',
             textDecoration: item.checked ? 'line-through' : 'none',
             color:item.checked ? '#3658AB' : 'black',
            }
           }>
     {item.value} 
   </span>
+          <div className='checkBox'>            
             <Checkbox
               checked={item.checked}
               onChange={() => CheckboxChange(item.id)}
               {...label}
               />
-        <Button id={"deleteButton"} onClick={()=>deleteItem(item.id)} variant="text" ><DeleteIcon></DeleteIcon></Button>
-        <Button id={"editButton"} onClick={()=>openEditModal(item)} variant="text" ><EditIcon></EditIcon></Button>
+          </div>
+        <Button id={"deleteIcon"} onClick={()=>deleteItem(item.id)}  ><DeleteIcon></DeleteIcon></Button>
+        <Button variant="text" id={"editIcon"} onClick={()=>openEditModal(item)}><EditIcon></EditIcon></Button>
         <div id='currentDate'>
         {/* {currentDate} {"("} {item.status} {")"} */}
-        {item.currentDate} ({item.status})
+        {item.currentDate}
         </div>
         </li>
       )

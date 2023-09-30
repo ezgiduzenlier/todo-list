@@ -11,10 +11,10 @@ function HeaderBox({status, handleChange}) {
 
   return (      
    <Box className="boxInput" >
-     <FormControl>
-      <InputLabel id="demo-simple-select-label">View</InputLabel>
+     <FormControl variant="standard" >
+      <InputLabel id="demo-simple-select-standart-label">View</InputLabel>
         <Select
-           labelId="demo-simple-select-label"
+           labelId="demo-simple-select-standart-label"
            id="demo-simple-select"
            value={status}
            label="Status"

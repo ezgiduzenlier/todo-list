@@ -1,23 +1,21 @@
 import './App.css';
-import React, {useState}  from 'react';
+import axios from 'axios'
+import React, {useState, useEffect}  from 'react';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import ModalFirst from './components/ModalFirst'
-import ModalSecond from './components/ModalSecond';
+import AddModal from './components/AddModal'
+import EditModal from './components/EditModal';
 import ListItems from './components/ListItems';
 import HeaderBox from './components/HeaderBox';
+import Background from './components/Background';
 
 
 function Home() {
-  const [selectedItem, setSelectedItem] = useState(null);
   const [openAdd, setOpenAdd] = React.useState(false);
   const [checkClick, setCheckClick] = useState(true);
   const [openEdit, setOpenEdit] = React.useState(false);
-  //const [editStatus, setEditStatus] = React.useState(null);
   const [newItem, setNewItem]= React.useState("");
   const [items, setItems]= React.useState([]);
-  //const [editItem, setEditItem] = React.useState();
-  //const [editedValue, setEditedValue] = R eact.useState('');
   const [checked, setChecked]=useState(false);
   const [status, setStatus] = useState('');
   const [modalStatus, setModalStatus] = useState(2);
@@ -25,6 +23,8 @@ function Home() {
   const editModalClose = () => setOpenEdit(false);
   const addModalOpen = () => setOpenAdd(true);
   const addModalClose = () => setOpenAdd(false);
+  const [isSorted, setIsSorted] = useState(false);
+  const [initialItems, setInitialItems] = useState([]);
   const handleChange = (e) => {
     setStatus(e.target.value);
   };
@@ -36,24 +36,25 @@ function Home() {
     setEdit(
       {
       ...edit,
-      status: e.target.value,//statusun value değeri.
+      status: e.target.value,//statusun value değeri. 1 ya da 2
     }
     );
   };
-  const handleEditItem = (id) => {// **********   burası yanlış, item listesini güncellersen düzelebilir *********
+  const handleEditItem = () => {
     const updatedItemsEdit = items.map(item => {
-      if (item.id === id) {
-        return { ...item, 
-          value: item.value,
-          checked: item.checked,
-          status: item.status
+      if (item.id === edit.id) {
+        return { 
+          ...item, 
+          value: edit.value,
+          checked: edit.status === 1,
+          status: edit.status
         };
       }
       return item;
     });
     setItems(updatedItemsEdit);
+    setOpenEdit(false);
   };
-  
 
   // listede idye göre değişiklik yapar.
   const CheckboxChange = (id) => {
@@ -96,8 +97,8 @@ function Home() {
     }
     setItems(oldItems => [...oldItems, item]);
     setNewItem("");
-    setOpenAdd(false);
-    setCheckClick(checked)
+    setCheckClick(checked);
+    setOpenAdd(false)
   }
   //label, inputProps özelliğine sahip bir nesnedir. Bu özellik chechbox'ın etiket özelliklerini tanımlamak için kullanılır.
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
@@ -110,9 +111,12 @@ function Home() {
      setOpenEdit(true);
      setEdit({
        ...edit,
+       id:item.id,
        value:item.value,
-       status:item.status
+       status:item.status,
+       checked:item.checked
      })
+
   };
    const handleSort = () => {
     const sortedItems = [...items].sort();
@@ -121,26 +125,52 @@ function Home() {
 
    const filteredItems = status ? items.filter(item => item.status===status) : items;
 
-   const sortFilteredItems = () => {
-    const sortedItems = [...items].sort((a, b) => {
-      return a.value.localeCompare(b.value);
-    });
-    setItems(sortedItems);
-  };
+    const sortFilteredItems = () => {
+     const sortedItems = [...items].sort((a, b) => {
+       return a.value.localeCompare(b.value);
+     });
+     setItems(sortedItems);
+   };
+
+  // useEffect(() => {
+  //   // İlk renderda, başlangıçtaki öğeleri initialItemsde sakla.
+  //   setInitialItems([...items]);
+  // }, []);
+  // const sortFilteredItems = () => {
+  //   if (isSorted) {
+  //     // Sıralama aktifse, öğeleri orijinal sıraya döndür.
+  //     const originalOrder = [...initialItems];
+  //     setItems(originalOrder);
+  //     setIsSorted(true);
+  //   } else {
+  //     // Sıralama aktif değilse, öğeleri sırala.
+  //     const sortedItems = [...items].sort((a, b) => {
+  //       return a.value.localeCompare(b.value);
+  //     });
+  //     setItems(sortedItems);
+  //     setIsSorted(false);
+  //   }
+  // };
+
 
   const currentDate = new Date().toLocaleString('tr-TR');
 
+
   return (
     <div className="App">
-        <div className='appLittle'>
           <div className='title'>TODO LIST</div>
-              <Button onClick={addModalOpen} variant="contained" className='addButton' ><AddIcon></AddIcon></Button>
-              <Button className='sortButton' onClick={sortFilteredItems} variant="contained">Sort from A to B</Button>
-              <HeaderBox
+              <div className='addButton'>
+                <Button onClick={addModalOpen}><AddIcon></AddIcon></Button>
+              </div>
+              <div className='sortButton'>
+                <Button  onClick={sortFilteredItems}>Sort from A to B</Button>
+                </div>
+                 <HeaderBox
                 status={status}
                 handleChange={handleChange}
-              />  
-              <ModalFirst
+                />  
+                
+              <AddModal
               openAdd={openAdd}
               newItem={newItem}
               setNewItem={setNewItem}// parantez içinde array func. yazmak ile aynı şey.
@@ -159,17 +189,17 @@ function Home() {
               currentDate={currentDate}
               label={label}
               />
-              <ModalSecond
+              <EditModal
               openEdit={openEdit}
               edit={edit}
               setEdit={setEdit}
-             // editStatus={edit.status}
               modalEditChange={modalEditChange}
               handleEditItem={handleEditItem}
               editModalClose={editModalClose}
               />
-          </div>
+              <Background></Background>
     </div>
+    
   );
 }
 export default Home;
