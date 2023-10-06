@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
 
-function ListItems({filteredItems, textFieldStyle, textFieldChange, CheckboxChange, deleteItem, openEditModal, label}) {
+function ListItems({todos,isLoading, refreshButton, setRefreshButton, textFieldStyle, textFieldChange, CheckboxChange, deleteItem, openEditModal, label}) {
 
   return (
-    <ul>
-    {filteredItems.map(item=>{// map=her bir item için çalış.
+    <div>
+      <button className='refreshBtn' onClick={()=>setRefreshButton(!refreshButton)}>Refresh</button>
+      {/* {isLoading ? (
+        <p>Loading...</p> // Eğer veriler yükleniyorsa, "Loading..." yazısını göster
+      ) : ( */}
+<ul>
+    {todos.map(item=>{// map=her bir item için çalış.
 
       return(
         //her bir iteme gelenler
@@ -25,7 +29,7 @@ function ListItems({filteredItems, textFieldStyle, textFieldChange, CheckboxChan
             color:item.checked ? '#3658AB' : 'black',
            }
           }>
-    {item.value} 
+    {item.text} 
   </span>
           <div className='checkBox'>            
             <Checkbox
@@ -38,12 +42,14 @@ function ListItems({filteredItems, textFieldStyle, textFieldChange, CheckboxChan
         <Button variant="text" id={"editIcon"} onClick={()=>openEditModal(item)}><EditIcon></EditIcon></Button>
         <div id='currentDate'>
         {/* {currentDate} {"("} {item.status} {")"} */}
-        {item.currentDate}
+        {item.createdOn}
         </div>
         </li>
       )
     })}
   </ul>
+    </div>
+    
   )
 }
 

@@ -20,7 +20,7 @@ function HeaderBox({status, handleChange}) {
            label="Status"
            onChange={handleChange}
          >
-          <MenuItem>All</MenuItem>
+          <MenuItem value={0}>All</MenuItem>
           <MenuItem value={1}>Completed</MenuItem>
           <MenuItem value={2}>Incompleted</MenuItem>
         </Select>
