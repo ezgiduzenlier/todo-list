@@ -5,13 +5,15 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 
-function LoginItems({TextField, Button}) {
+function LoginItems({TextField, Button}) 
+{
 
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
+  const [token, setToken] = useState(null);
 
   function login() {
-console.log("mail: ",mail)
+    console.log("mail: ",mail)
     const item = {
       mail: mail,
       password : password
@@ -20,7 +22,8 @@ console.log("mail: ",mail)
       .then(response => {
         console.log('Response:', response.data);
         console.log(response)
-        localStorage.setItem("token", response.data.token)
+        localStorage.setItem("token", response.data.token)//tokanı güvenli bir yere kaydettim (localStorage)
+        getUserInfo(token);
         toast.success('Data added successfully!', {
           position: "top-right",
           autoClose: 5000,
@@ -36,9 +39,35 @@ console.log("mail: ",mail)
       });
   }
 
+  async function getUserInfo(token) {
+    try {
+      const response = await fetch('/api/GetUserInfo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({})
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        const name = data.Name; // Kullanıcı adını yanıttan al
+        localStorage.setItem('Name', name);
+  
+        displayWelcomeMessage(); // Hoşgeldin mesajını göster
+      } else {
+        console.error('GetUserInfo failed:', data);
+      }
+    } catch (error) {
+      console.error('GetUserInfo error:', error);
+    }
+  }
+
 
   return (
     <div>
+      <div id="welcome_message"></div>
     <div className='sign_inputs'>
       <div id="signIn">Sign In</div>
       <TextField id="name" label="Name" variant="standard"/><br></br>

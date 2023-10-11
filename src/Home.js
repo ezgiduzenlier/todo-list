@@ -9,6 +9,7 @@ import ListItems from './components/ListItems';
 import HeaderBox from './components/HeaderBox';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 
 
 
@@ -175,6 +176,11 @@ function Home() {
   };
    const filteredItems = status ? items.filter(item => item.status===status) : items;
 
+   const removeToken = () => {
+    localStorage.removeItem('Authorization'); // 'authToken' anahtarlı öğeyi localStorage'dan siler.
+    alert('Token silindi!');
+  };
+
    const sortFilteredItems = () => {
      const sortedItems = [...items].sort((a, b) => {
        return a.value.localeCompare(b.value);
@@ -201,6 +207,7 @@ function Home() {
 
   return (
     <div className="App">
+      <Button id='logoutBtn' sx={{ color: '#FFF9EE' }} onClick={removeToken}><LogoutIcon></LogoutIcon></Button>
           <div className='title'>TODO LIST</div>
               <div className='addButton'>
                 <Button onClick={addModalOpen}><AddIcon></AddIcon></Button>
